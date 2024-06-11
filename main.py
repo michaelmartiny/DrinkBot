@@ -4,7 +4,7 @@ from discord.ext import commands
 import json
 
 intents = discord.Intents.default()
-intents.messages = True
+intents.messages = True  # Set the messages intent to True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
@@ -198,14 +198,15 @@ def update_count(author_id: int, drink: str, amount: int = 1):
 drink_counts = load_counts()
 
 # Bot token handling
-try:
-    token = os.getenv("TOKEN") or ""
-    if token == "":
-        raise Exception("Please add your token to the Secrets pane.")
-    bot.run(token)
-except discord.HTTPException as e:
-    if e.status == 429:
-        print("The Discord servers denied the connection for making too many requests")
-        print("Get help from https://stackoverflow.com/questions/66724687/in-discord-py-how-to-solve-the-error-for-toomanyrequests")
-    else:
-        raise e
+token = os.getenv("TOKEN")
+if token is None or token == "":
+    print("Please add your token to the Secrets pane.")
+else:
+    try:
+        bot.run(token)
+    except discord.HTTPException as e:
+        if e.status == 429:
+            print("The Discord servers denied the connection for making too many requests")
+            print("Get help from https://stackoverflow.com/questions/66724687/in-discord-py-how-to-solve-the-error-for-toomanyrequests")
+        else:
+            raise e
